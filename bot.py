@@ -389,38 +389,26 @@ def handle_channel_post_in_channel(message):
 
 
 @bot.channel_post_handler(commands=['reqpost'])
-def reqpost_command_in_channel(message):
-    """Handles the /reqpost command posted in a channel by admin."""
+def reqpost_channel_post(message):
+    """Handles the /reqpost command posted in the channel by admin."""
     try:
-        # Ensure the command is issued within a channel post
         channel_id = message.chat.id
-
-        # Check if the sender is an admin in the channel (no need for message.from_user)
-        if not is_admin(message.from_user.id):
+        user_id = message.from_user.id
+        
+        # Ensure the sender is an admin in the channel
+        if not is_admin(user_id, channel_id):
             bot.reply_to(message, "❌ You don't have permission to use this command.")
             return
 
-        # Extract arguments: channel ID should be passed as the second argument
-        args = message.text.split()
-        if len(args) != 2:
-            bot.reply_to(message, "❌ Invalid command. Usage: /reqpost <channel_id>")
-            return
-        
+        # Check if the user is an admin in the channel
         try:
-            target_channel_id = int(args[1])  # Assuming channel ID is passed as argument
-        except ValueError:
-            bot.reply_to(message, "❌ Invalid channel ID provided.")
-            return
-        
-        # Check if the user is an admin in the target channel
-        try:
-            chat_member = bot.get_chat_member(target_channel_id, message.from_user.id)
+            chat_member = bot.get_chat_member(channel_id, user_id)
             if chat_member.status not in ["administrator", "creator"]:
-                bot.reply_to(message, "❌ You are not an admin in the target channel.")
+                bot.reply_to(message, "❌ You are not an admin in this channel.")
                 return
         except Exception as e:
             print(f"Error checking admin status: {e}")
-            bot.reply_to(message, "⚠️ Error checking admin status. Ensure the bot is an admin in the target channel.")
+            bot.reply_to(message, "⚠️ Error checking admin status. Make sure the bot is an admin in the channel and try again.")
             return
 
         # Generate a unique deep link for the channel
@@ -428,12 +416,12 @@ def reqpost_command_in_channel(message):
         bot_username = user_bot.get_me().username
         deep_link = f"https://t.me/{bot_username}?start=request_{unique_id}"
 
-        # Save the link information in memory and database
+        # Store the link information in memory
         link_data = {
-            "channel_id": target_channel_id,
+            "channel_id": channel_id,
             "expiration_time": time.time() + 86400 * 300,  # 30 days expiration for the deep link
             "deep_link": deep_link,
-            "type": "request"  # Request link
+            "type": "request"
         }
         channel_links[unique_id] = link_data
 
@@ -445,14 +433,14 @@ def reqpost_command_in_channel(message):
         )
 
         # Store channel information in MongoDB if it doesn't exist
-        channel_info = channels_collection.find_one({"channel_id": target_channel_id})
+        channel_info = channels_collection.find_one({"channel_id": channel_id})
         if not channel_info:
-            chat_info = bot.get_chat(target_channel_id)
+            chat_info = bot.get_chat(channel_id)
             channels_collection.insert_one({
-                "channel_id": target_channel_id,
+                "channel_id": channel_id,
                 "title": chat_info.title,
                 "username": chat_info.username,
-                "added_by": message.from_user.id,
+                "added_by": user_id,
                 "added_at": time.time(),
                 "clicks": 0,
                 "joins": 0,
@@ -461,28 +449,35 @@ def reqpost_command_in_channel(message):
 
             # Log new channel registration
             channel_title = chat_info.title
-            username = f"@{message.from_user.username}" if message.from_user.username else f"ID: {message.from_user.id}"
-            log_msg = f"📌 New Channel Registered\nID: {target_channel_id}\nTitle: {channel_title}\nBy: {username}"
+            username = f"@{message.from_user.username}" if message.from_user.username else f"ID: {user_id}"
+            log_msg = f"📌 New Channel Registered\nID: {channel_id}\nTitle: {channel_title}\nBy: {username}"
             send_log(log_msg)
 
         # Send the generated link to the link channel
         bot.send_message(
             LINK_CHANNEL_ID,
-            f"✅ New Request Link Generated!\n"
+            f"✅ New Channel Request Link Generated!\n"
             f"Channel: <b>{message.chat.title}</b>\n"
             f"Access this channel here: <a href='{deep_link}'>Click to join</a>",
             parse_mode="HTML"
         )
 
-        # Send a reply to the channel where the command was issued
-        bot.reply_to(message, f"✅ Request link sent to the link channel!\n<a href='{deep_link}'>Click here</a> to view.",
-                     parse_mode="HTML")
+        # Acknowledge in the channel where the command was issued
+        bot.reply_to(
+            message,
+            f"✅ Request link successfully generated!\n<a href='{deep_link}'>Click here</a> to view.",
+            parse_mode="HTML"
+        )
 
         # Log the link creation
+        channel_title = bot.get_chat(channel_id).title
+        username = f"@{message.from_user.username}" if message.from_user.username else f"ID: {user_id}"
         expire_time = utc_to_ist(time.time() + 86400 * 30)
-        log_msg = f"🔗 New Request Link Created\nChannel: {message.chat.title}\nGenerated by: @{message.from_user.username or 'ID:' + str(message.from_user.id)}\nExpires: {expire_time}"
+        log_msg = f"🔗 New Request Link Created\nChannel: {channel_title}\nGenerated by: {username}\nExpires: {expire_time}"
         send_log(log_msg)
 
+    except (ValueError, IndexError):
+        bot.reply_to(message, "⚠️ Invalid command. Make sure you are using it correctly.")
     except Exception as e:
         print(f"[ERROR] {e}")
         bot.reply_to(message, "⚠️ An unexpected error occurred. Please try again later.")
