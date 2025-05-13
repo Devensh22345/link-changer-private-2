@@ -8,6 +8,7 @@ from pymongo import MongoClient
 import os
 from telebot import types
 from telebot import apihelper
+from telebot import types
 
 # Configuration
 BOT_TOKEN = os.environ.get('BOT_TOKEN', "7430337602:AAHes470_Jry8lghlL4_bo49SKZ5W-stBYo")
@@ -15,6 +16,7 @@ USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7833128310:AAEoF3shK5Z3EFNsin
 ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6872968794').split(',') if id]
 LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002628986986")
 MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://link:link@cluster0.swqv8gk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+LINK_CHANNEL_ID = "@your_link_channel"  # or the channel's ID, e.g. -1001234567890
 
 
 # Connect to MongoDB
@@ -313,43 +315,25 @@ def callback_handler(call):
         bot.answer_callback_query(call.id)
 
 @bot.message_handler(commands=['channelpost'])
-def channelpost_command(message):
-    """Handles the /channelpost command."""
-    user_id = message.from_user.id
-    if not is_admin(user_id):
-        bot.reply_to(message, "You don't have permission to use this command.")
-        return
-    
+def handle_channel_post(message):
     try:
-        args = message.text.split()
-        if len(args) != 2:
-            bot.reply_to(message, "Invalid command. Usage: /channelpost <channel_id>")
-            return
-        
-        channel_id = int(args[1])
-        
-        # Check if the user is an admin in the channel
-        try:
-            chat_member = bot.get_chat_member(channel_id, message.from_user.id)
-            if chat_member.status not in ["administrator", "creator"]:
-                bot.reply_to(message, "You are not an admin in this channel.")
-                return
-        except Exception as e:
-            print(f"Error checking admin status: {e}")
-            bot.reply_to(message, "Error checking admin status. Make sure the bot is an admin in the channel and try again.")
-            return
+        # Extract the channel ID from the message (assuming it's provided)
+        channel_id = message.text.split()[1]  # Assuming the channel ID is provided after the command
+        channel_id = int(channel_id)  # Make sure the channel ID is an integer
 
-        # Generate a unique deep link for the channel
-        unique_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-        deep_link = f"https://t.me/{user_bot.get_me().username}?start=private_{unique_id}"
+        # Generate deep link and store expiration time (set to 30 days from now)
+        deep_link = f"https://t.me/{channel_id}?start={channel_id}"  # Example deep link format
+        unique_id = f"{channel_id}_{int(time.time())}"  # Unique ID based on the channel and timestamp
 
-        # Store the link information in memory and database
         link_data = {
             "channel_id": channel_id,
-            "expiration_time": time.time() + 86400 * 300,  # 30 days expiration for the deep link
+            "expiration_time": time.time() + 86400 * 30,  # 30 days expiration for the deep link
             "deep_link": deep_link,
-            "type": "private"  # or "request"
+            "type": "request"  # Type can be "request" or other types
         }
+
+        # Store the link data in memory (you can use it for future reference)
+        channel_links = {}  # Assuming this is already declared elsewhere
         channel_links[unique_id] = link_data
 
         # Save to MongoDB
@@ -359,10 +343,10 @@ def channelpost_command(message):
             upsert=True
         )
 
-        
         # Store channel information in MongoDB if it doesn't exist
         channel_info = channels_collection.find_one({"channel_id": channel_id})
         if not channel_info:
+            # Fetch chat info from Telegram API (bot.get_chat)
             chat_info = bot.get_chat(channel_id)
             channels_collection.insert_one({
                 "channel_id": channel_id,
@@ -374,22 +358,23 @@ def channelpost_command(message):
                 "joins": 0,
                 "links_generated": 0
             })
-            
+
             # Log new channel registration
             channel_title = chat_info.title
             username = f"@{message.from_user.username}" if message.from_user.username else f"ID: {message.from_user.id}"
             log_msg = f"📌 New Channel Registered\nID: {channel_id}\nTitle: {channel_title}\nBy: {username}"
             send_log(log_msg)
-        
-        bot.reply_to(message, f"Permanent link generated:\n{deep_link}")
-        
+
+        # Respond to the user with the deep link
+        bot.reply_to(message, f"Permanent request link generated:\n{deep_link}")
+
         # Log link creation
         channel_title = bot.get_chat(channel_id).title
         username = f"@{message.from_user.username}" if message.from_user.username else f"ID: {message.from_user.id}"
         expire_time = utc_to_ist(time.time() + 86400 * 30)
-        log_msg = f"🔗 New Link Created\nChannel: {channel_title}\nType: Private Link\nGenerated by: {username}\nExpires: {expire_time}"
+        log_msg = f"🔗 New Link Created\nChannel: {channel_title}\nType: Request Link\nGenerated by: {username}\nExpires: {expire_time}"
         send_log(log_msg)
-        
+
     except (ValueError, IndexError):
         bot.reply_to(message, "Invalid channel ID provided.")
     except Exception as e:
