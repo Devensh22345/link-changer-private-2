@@ -10,11 +10,11 @@ from telebot import types
 from telebot import apihelper
 
 # Configuration
-BOT_TOKEN = os.environ.get('BOT_TOKEN', "")
-USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "")  # User bot token
-ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6204872199,6449631273').split(',') if id]
-LOG_CHANNEL = os.environ.get('LOG_CHANNEL', )
-MONGO_URI = os.environ.get('MONGODB_URI', '')
+BOT_TOKEN = os.environ.get('BOT_TOKEN', "7430337602:AAHes470_Jry8lghlL4_bo49SKZ5W-stBYo")
+USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7833128310:AAEoF3shK5Z3EFNsin1gr5BpQyjzLyzyc5A")  # User bot token
+ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6872968794').split(',') if id]
+LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002628986986")
+MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://link:link@cluster0.swqv8gk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 
 # Connect to MongoDB
