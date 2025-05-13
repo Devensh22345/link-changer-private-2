@@ -326,26 +326,47 @@ def handle_channel_post_in_channel(message):
         # In channel posts, from_user is None; use sender_chat.title
         channel_title = message.chat.title or "Unnamed Channel"
 
-        # Generate a unique deep link
-        unique_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-        bot_username = user_bot.get_me().username
-        deep_link = f"https://t.me/{bot_username}?start=private_{unique_id}"
+        # Check if the channel already has a link
+        existing_link = deep_links_collection.find_one({"channel_id": channel_id})
+        
+        if existing_link:
+            # Check if the existing link has expired
+            if existing_link['expiration_time'] > time.time():
+                deep_link = existing_link['deep_link']
+                bot.reply_to(message, f"✅ Link already generated! Access it here: {deep_link}")
+                return  # Link is still valid, exit the function
+            else:
+                # Link expired, generate a new one
+                unique_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+                deep_link = f"https://t.me/{user_bot.get_me().username}?start=private_{unique_id}"
 
-        # Save link info in memory
-        link_data = {
-            "channel_id": channel_id,
-            "expiration_time": time.time() + 86400 * 30,  # 30 days
-            "deep_link": deep_link,
-            "type": "private"
-        }
-        channel_links[unique_id] = link_data
+                # Update the link data in memory and DB
+                link_data = {
+                    "channel_id": channel_id,
+                    "expiration_time": time.time() + 86400 * 30,  # 30 days expiration
+                    "deep_link": deep_link,
+                    "type": "private"
+                }
+                deep_links_collection.update_one(
+                    {"channel_id": channel_id},
+                    {"$set": link_data},
+                    upsert=True
+                )
+                channel_links[unique_id] = link_data  # Update in memory
+        else:
+            # No link exists for this channel, so generate a new one
+            unique_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+            deep_link = f"https://t.me/{user_bot.get_me().username}?start=private_{unique_id}"
 
-        # Save to MongoDB
-        deep_links_collection.update_one(
-            {"_id": unique_id},
-            {"$set": link_data},
-            upsert=True
-        )
+            # Store new link data in DB and memory
+            link_data = {
+                "channel_id": channel_id,
+                "expiration_time": time.time() + 86400 * 30,  # 30 days expiration
+                "deep_link": deep_link,
+                "type": "private"
+            }
+            deep_links_collection.insert_one(link_data)
+            channel_links[unique_id] = link_data
 
         # Save channel info if new
         if not channels_collection.find_one({"channel_id": channel_id}):
@@ -361,9 +382,9 @@ def handle_channel_post_in_channel(message):
                 "links_generated": 1
             })
 
-            send_log(f"📌 New Channel Registered\nID: {channel_id}\nTitle: {chat_info.title}")
+            send_log(f"📌 New Channel Registered\nID: {channel_id}\nTitle: {channel_title}")
 
-        # Send link to link channel
+        # Send the link to the link channel
         bot.send_message(
             LINK_CHANNEL_ID,
             f"✅ New Channel Link Generated!\n"
@@ -372,20 +393,21 @@ def handle_channel_post_in_channel(message):
             parse_mode="HTML"
         )
 
-        # Reply in the channel
+        # Reply in the source channel
         bot.reply_to(
             message,
             f"✅ Link sent to the link channel!\n<a href='{deep_link}'>Click here</a> to view.",
             parse_mode="HTML"
         )
 
-        # Log it
+        # Log link creation
         expire_time = utc_to_ist(link_data["expiration_time"])
         send_log(f"🔗 New Link Created\nChannel: {channel_title}\nExpires: {expire_time}")
 
     except Exception as e:
         print(f"[ERROR] {e}")
         bot.reply_to(message, "⚠️ Something went wrong while processing your request.")
+
 
 
 @bot.message_handler(commands=['reqpost'])
