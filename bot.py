@@ -312,32 +312,39 @@ def callback_handler(call):
         bot.delete_message(call.message.chat.id, call.message.message_id)
         bot.answer_callback_query(call.id)
 
-@bot.message_handler(commands=['channelpost'])
-def channelpost_command(message):
-    """Handles the /channelpost command."""
+from telebot import types
+
+# Replace with your actual link channel ID
+LINK_CHANNEL_ID = "@your_link_channel"  # or the channel's ID, e.g. -1001234567890
+
+@bot.channel_post_handler(commands=["channelpost"])
+def handle_channel_post_in_channel(message):
+    """Handles the /channelpost command posted in a channel by admin."""
+    # Get the channel ID and the sender's user ID
+    channel_id = message.chat.id
     user_id = message.from_user.id
-    if not is_admin(user_id):
-        bot.reply_to(message, "You don't have permission to use this command.")
-        return
     
-    try:
-        args = message.text.split()
-        if len(args) != 2:
-            bot.reply_to(message, "Invalid command. Usage: /channelpost <channel_id>")
-            return
-        
-        channel_id = int(args[1])
-        
-        # Check if the user is an admin in the channel
-        try:
-            chat_member = bot.get_chat_member(channel_id, message.from_user.id)
-            if chat_member.status not in ["administrator", "creator"]:
-                bot.reply_to(message, "You are not an admin in this channel.")
-                return
-        except Exception as e:
-            print(f"Error checking admin status: {e}")
-            bot.reply_to(message, "Error checking admin status. Make sure the bot is an admin in the channel and try again.")
-            return
+    # Ensure the sender is an admin
+    if not is_admin(user_id):
+        bot.reply_to(message, "You don't have permission to perform this action.")
+        return
+
+    # Create the link to the channel, possibly a private link
+    
+    if private_link:
+        # Send the accessible link to the LINK_CHANNEL
+        bot.send_message(
+            LINK_CHANNEL_ID,
+            f"✅ New Channel Link Generated!\n"
+            f"Channel: <b>{message.chat.title}</b>\n"
+            f"Access this channel here: <a href=''>Click to join</a>",
+            parse_mode="HTML",
+        )
+        bot.reply_to(message, f"✅ Link successfully sent to the link channel.\n"
+                              f"Access the channel here: {deep_link}")
+    else:
+        bot.reply_to(message, "Failed to generate a link. Please try again later.")
+
 
         # Generate a unique deep link for the channel
         unique_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
@@ -381,7 +388,7 @@ def channelpost_command(message):
             log_msg = f"📌 New Channel Registered\nID: {channel_id}\nTitle: {channel_title}\nBy: {username}"
             send_log(log_msg)
         
-        bot.reply_to(message, f"Permanent link generated:\n{deep_link}")
+        
         
         # Log link creation
         channel_title = bot.get_chat(channel_id).title
