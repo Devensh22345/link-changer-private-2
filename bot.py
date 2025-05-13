@@ -315,47 +315,31 @@ def callback_handler(call):
 from telebot import types
 
 # Replace with your actual link channel ID
-LINK_CHANNEL_ID = "@your_link_channel"  # or the channel's ID, e.g. -1001234567890
+LINK_CHANNEL_ID = "-1002301713536"  # or the channel's ID, e.g. -1001234567890
 
 @bot.channel_post_handler(commands=["channelpost"])
 def handle_channel_post_in_channel(message):
     """Handles the /channelpost command posted in a channel by admin."""
-    # Get the channel ID and the sender's user ID
-    channel_id = message.chat.id
-    user_id = message.from_user.id
-    
-    # Ensure the sender is an admin
-    if not is_admin(user_id):
-        bot.reply_to(message, "You don't have permission to perform this action.")
-        return
+    try:
+        # Get the channel ID and the sender's user ID
+        channel_id = message.chat.id
+        user_id = message.from_user.id
 
-    # Create the link to the channel, possibly a private link
-    
-    if private_link:
-        # Send the accessible link to the LINK_CHANNEL
-        bot.send_message(
-            LINK_CHANNEL_ID,
-            f"✅ New Channel Link Generated!\n"
-            f"Channel: <b>{message.chat.title}</b>\n"
-            f"Access this channel here: <a href=''>Click to join</a>",
-            parse_mode="HTML",
-        )
-        bot.reply_to(message, f"✅ Link successfully sent to the link channel.\n"
-                              f"Access the channel here: {deep_link}")
-    else:
-        bot.reply_to(message, "Failed to generate a link. Please try again later.")
-
+        # Ensure the sender is an admin
+        if not is_admin(user_id):
+            bot.reply_to(message, "You don't have permission to perform this action.")
+            return
 
         # Generate a unique deep link for the channel
         unique_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
         deep_link = f"https://t.me/{user_bot.get_me().username}?start=private_{unique_id}"
 
-        # Store the link information in memory and database
+        # Store the link information
         link_data = {
             "channel_id": channel_id,
-            "expiration_time": time.time() + 86400 * 300,  # 30 days expiration for the deep link
+            "expiration_time": time.time() + 86400 * 300,  # 30 days
             "deep_link": deep_link,
-            "type": "private"  # or "request"
+            "type": "private"
         }
         channel_links[unique_id] = link_data
 
@@ -366,8 +350,7 @@ def handle_channel_post_in_channel(message):
             upsert=True
         )
 
-        
-        # Store channel information in MongoDB if it doesn't exist
+        # Check if channel info already exists
         channel_info = channels_collection.find_one({"channel_id": channel_id})
         if not channel_info:
             chat_info = bot.get_chat(channel_id)
@@ -381,15 +364,25 @@ def handle_channel_post_in_channel(message):
                 "joins": 0,
                 "links_generated": 0
             })
-            
+
             # Log new channel registration
             channel_title = chat_info.title
             username = f"@{message.from_user.username}" if message.from_user.username else f"ID: {message.from_user.id}"
             log_msg = f"📌 New Channel Registered\nID: {channel_id}\nTitle: {channel_title}\nBy: {username}"
             send_log(log_msg)
-        
-        
-        
+
+        # Send the link to LINK_CHANNEL_ID
+        bot.send_message(
+            LINK_CHANNEL_ID,
+            f"✅ New Channel Link Generated!\n"
+            f"Channel: <b>{message.chat.title}</b>\n"
+            f"Access this channel here: <a href='{deep_link}'>Click to join</a>",
+            parse_mode="HTML",
+        )
+
+        bot.reply_to(message, f"✅ Link successfully sent to the link channel.\n"
+                              f"Access the channel here: {deep_link}")
+
         # Log link creation
         channel_title = bot.get_chat(channel_id).title
         username = f"@{message.from_user.username}" if message.from_user.username else f"ID: {message.from_user.id}"
@@ -403,7 +396,6 @@ def handle_channel_post_in_channel(message):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         bot.reply_to(message, "An unexpected error occurred. Please try again later.")
-
 
 @bot.message_handler(commands=['reqpost'])
 def reqpost_command(message):
