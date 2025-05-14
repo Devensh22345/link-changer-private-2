@@ -11,11 +11,11 @@ from telebot import apihelper
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Configuration
-BOT_TOKEN = os.environ.get('BOT_TOKEN', "8072699440:AAEN_u-O8I9ZWf6r02waVRG8qPH1Joka30g")
-USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7430337602:AAHes470_Jry8lghlL4_bo49SKZ5W-stBYo")  # User bot token
-ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6872968794').split(',') if id]
-LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002628986986")
-MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://link:link@cluster0.swqv8gk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+BOT_TOKEN = os.environ.get('BOT_TOKEN', "7622306600:AAGEMajj4iR5-CeYIrNi0fvhUa9oiJiJx54")
+USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7952718714:AAHLRxtXn6jEofgFEPNfjBhS2BVrl-bgKjI")  # User bot token
+ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '7337525692,7074889200,6264642175').split(',') if id]
+LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002534091815")
+MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://gunji:gunji@cluster0.j2lcjxl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 
 # Connect to MongoDB
@@ -189,17 +189,17 @@ def user_start_command(message):
 
      # Regular start command (no special suffix)
     markup = types.InlineKeyboardMarkup(row_width=2)
-    anime_button = types.InlineKeyboardButton("🔥 𝐀𝐧𝐢𝐦𝐞 𝐢𝐧 𝐇𝐢𝐧𝐝𝐢", url="https://t.me/+2fsV4nzHvOs2OGNl")
-    chat_button = types.InlineKeyboardButton("💬 𝐂𝐡𝐚𝐭 𝐆𝐫𝐨𝐮𝐩", url="https://t.me/dkanime_group")
+    anime_button = types.InlineKeyboardButton("🔥 𝐀𝐧𝐢𝐦𝐞 𝐢𝐧 𝐇𝐢𝐧𝐝𝐢", url="https://t.me/+gznHt2PGbIxhYjY1")
+    chat_button = types.InlineKeyboardButton("💬 𝐂𝐡𝐚𝐭 𝐆𝐫𝐨𝐮𝐩", url="https://t.me/+tW3syN0gwms4ZjM1")
     markup.add(anime_button, chat_button)
 
     message_text = (
     "⛩️⛩️ **𝗡𝗲𝘄 𝗔𝗻𝗶𝗺𝗲 𝗶𝗻 𝗛𝗶𝗻𝗱𝗶** ⛩️⛩️\n"
-    "[👉 https://t.me/+2fsV4nzHvOs2OGNl](👉https://t.me/+2fsV4nzHvOs2OGNl)\n\n"
+    "[👉 https://t.me/+gznHt2PGbIxhYjY1](https://t.me/+gznHt2PGbIxhYjY1)\n\n"
     "💬 **𝗔𝗻𝗶𝗺𝗲 𝗦𝗲𝗮𝗿𝗰𝗵 𝗮𝗻𝗱 𝗖𝗵𝗮𝘁 𝗚𝗿𝗼𝘂𝗽** 💬\n"
-    "[👉 https://t.me/dkanime_group](https://t.me/dkanime_group)\n\n"
+    "[👉 https://t.me/+tW3syN0gwms4ZjM1](https://t.me/+tW3syN0gwms4ZjM1)\n\n"
     "🍑 **𝗔𝗱𝘂𝗹𝘁 𝗔𝗻𝗶𝗺𝗲 𝗶𝗻 𝗵𝗶𝗻𝗱𝗶 [𝟭𝟴+]** 🍑\n"
-    "[👉 https://t.me/+X-vfMcD-GkY3MzQ1](https://t.me/+X-vfMcD-GkY3MzQ1)"
+    "[👉 https://t.me/+DHpbqaPnHfA1Zjhl](https://t.me/+DHpbqaPnHfA1Zjhl)"
     )
 
 
@@ -274,7 +274,7 @@ def user_handle_deeplink(message):
 
         sent_msg = user_bot.reply_to(
             message,
-            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 ⛩️</b>\n"
+            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ⛩️</b>\n"
             f"<b>👉 {private_link}</b>\n"
             f"<b>👉 {private_link}</b>",
             parse_mode="HTML",
@@ -319,7 +319,7 @@ def callback_handler(call):
 from telebot import types
 
 # Replace with your actual link channel ID
-LINK_CHANNEL_ID = "-1002301713536"  # or the channel's ID, e.g. -1001234567890
+LINK_CHANNEL_ID = "-1002564980969"  # or the channel's ID, e.g. -1001234567890
 
 @bot.channel_post_handler(commands=["channelpost"])
 def handle_channel_post_in_channel(message):
@@ -544,7 +544,7 @@ def handle_deeplink_message(message):
         
         bot.reply_to(
         message,
-        f"<b>⛩️𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 </b>\n"
+        f"<b>⛩️𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 </b>\n"
         f"<b>👉{private_link}</b>\n"
         f"<b>👉{private_link}</b>",
         parse_mode="HTML",
