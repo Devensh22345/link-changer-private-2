@@ -457,7 +457,7 @@ def reqpost_channel_post(message):
             f"<b>{message.chat.title}</b>\n"
             f"<a href='{deep_link}'>𝗪𝗔𝗥𝗖𝗛 𝗔𝗡𝗗 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗</a>",
             parse_mode="HTML",
-            reply_markup=marku
+            reply_markup=markup
         )
 
         # Acknowledge in the channel where the command was issued
