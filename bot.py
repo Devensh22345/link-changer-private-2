@@ -541,7 +541,10 @@ def handle_deeplink_message(message):
         # Try to get channel name
         try:
             chat = bot.get_chat(channel_id)
-            channel_name = chat.title
+            if chat and chat.title:
+                channel_name = chat.title
+            else:
+                channel_name = "this channel"
         except Exception as e:
             channel_name = "the channel"  # Fallback if something fails
         
