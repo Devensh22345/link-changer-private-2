@@ -208,12 +208,7 @@ def user_start_command(message):
     # Schedule message deletion after 10 minutes
     threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
 
-
-
-
 # Function to handle deep links for user bot
-
-
 def user_handle_deeplink(message):
     """Handles deep link activation for user bot."""
     user = message.from_user
@@ -258,7 +253,18 @@ def user_handle_deeplink(message):
             {"$inc": {"links_requested": 1}}
         )
 
-        
+        channels_collection.update_one(
+            {"channel_id": channel_id},
+            {"$inc": {"clicks": 1}}
+        )
+
+        try:
+            # Get the actual channel name
+            
+            channel_title = message.chat.title 
+        except Exception:
+            print(f"[DEBUG] channel_id: {channel_id}")
+            channel_title = "the channel"
 
         markup = types.InlineKeyboardMarkup()
         markup.add(
@@ -268,7 +274,7 @@ def user_handle_deeplink(message):
 
         sent_msg = user_bot.reply_to(
             message,
-            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 </b>\n"
+            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫 {channel_title} ⛩️</b>\n"
             f"<b>👉 {private_link}</b>\n"
             f"<b>👉 {private_link}</b>",
             parse_mode="HTML",
@@ -478,7 +484,7 @@ def reqpost_channel_post(message):
 
 
 
-@bot.message_handler(func=lambda message: message.text and (message.text.startswith("/start private_") or message.text.startswith("/start request_")))
+@bot.message_handler(func=lambda message: message.text and message.text.startswith("/start private_") or message.text.startswith("/start request_"))
 def handle_deeplink_message(message):
     """Handles deep link activation."""
     user = message.from_user
@@ -532,31 +538,20 @@ def handle_deeplink_message(message):
             {"$inc": {"clicks": 1}}
         )
         
-        # Try to get channel name
-        try:
-            chat = bot.get_chat(channel_id)
-            if chat and chat.title:
-                channel_name = chat.title
-            else:
-                channel_name = "this channel"
-        except Exception as e:
-            channel_name = "the channel"  # Fallback if something fails
-        
         # Create button with the permanent deep link
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]))
         
         bot.reply_to(
-            message,
-            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤  ⛩️</b>\n"
-            f"<b>👉 {private_link}</b>\n"
-            f"<b>👉 {private_link}</b>",
-            parse_mode="HTML",
-            reply_markup=markup
+        message,
+        f"<b>⛩️𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 </b>\n"
+        f"<b>👉{private_link}</b>\n"
+        f"<b>👉{private_link}</b>",
+        parse_mode="HTML",
+        reply_markup=markup
         )
     else:
         bot.reply_to(message, "Failed to generate a link. Please try again later.")
-
 
 @bot.message_handler(commands=['users'])
 def users_command(message):
