@@ -260,7 +260,7 @@ def user_handle_deeplink(message):
         try:
             # Get the actual channel name
             
-            channel_title = message.chat.title or "Unnamed Channel"
+            channel_title = message.chat.title 
         except Exception:
             print(f"[DEBUG] channel_id: {channel_id}")
             channel_title = "the channel"
