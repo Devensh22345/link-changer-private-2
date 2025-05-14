@@ -12,7 +12,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Configuration
 BOT_TOKEN = os.environ.get('BOT_TOKEN', "7430337602:AAHes470_Jry8lghlL4_bo49SKZ5W-stBYo")
-USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7833128310:AAEoF3shK5Z3EFNsin1gr5BpQyjzLyzyc5A")  # User bot token
+USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "8072699440:AAEN_u-O8I9ZWf6r02waVRG8qPH1Joka30g")  # User bot token
 ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6872968794').split(',') if id]
 LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002628986986")
 MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://link:link@cluster0.swqv8gk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
