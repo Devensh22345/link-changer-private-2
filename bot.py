@@ -264,8 +264,9 @@ def user_handle_deeplink(message):
             {"$inc": {"clicks": 1}}
         )
         
-      channel_info = user_bot.get_chat(chat_id)  # Replace `chat_id` with actual channel ID or username
-      channel_name = channel_info.title  # or .username if you prefer
+        
+channel_info = user_bot.get_chat(chat_id)  # Replace `chat_id` with actual channel ID or username
+channel_name = channel_info.title  # or .username if you prefer
 
 # Create inline keyboard
       markup = types.InlineKeyboardMarkup()
