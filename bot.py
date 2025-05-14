@@ -484,7 +484,7 @@ def reqpost_channel_post(message):
 
 
 
-@bot.message_handler(func=lambda message: message.text and message.text.startswith("/start private_") or message.text.startswith("/start request_"))
+@bot.message_handler(func=lambda message: message.text and (message.text.startswith("/start private_") or message.text.startswith("/start request_")))
 def handle_deeplink_message(message):
     """Handles deep link activation."""
     user = message.from_user
@@ -538,20 +538,28 @@ def handle_deeplink_message(message):
             {"$inc": {"clicks": 1}}
         )
         
+        # Try to get channel name
+        try:
+            chat = bot.get_chat(channel_id)
+            channel_name = chat.title
+        except Exception as e:
+            channel_name = "the channel"  # Fallback if something fails
+        
         # Create button with the permanent deep link
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]))
         
         bot.reply_to(
-        message,
-        f"<b>⛩️ Join Channel to watch Anime⛩️</b>\n"
-        f"<b>👉{private_link}</b>\n"
-        f"<b>👉{private_link}</b>",
-        parse_mode="HTML",
-        reply_markup=markup
+            message,
+            f"<b>⛩️ Join {channel_name} to watch Anime ⛩️</b>\n"
+            f"<b>👉 {private_link}</b>\n"
+            f"<b>👉 {private_link}</b>",
+            parse_mode="HTML",
+            reply_markup=markup
         )
     else:
         bot.reply_to(message, "Failed to generate a link. Please try again later.")
+
 
 @bot.message_handler(commands=['users'])
 def users_command(message):
