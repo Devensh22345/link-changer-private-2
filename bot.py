@@ -366,6 +366,9 @@ def handle_channel_post_in_channel(message):
 
             send_log(f"📌 New Channel Registered\nID: {channel_id}\nTitle: {chat_info.title}")
 
+        # Create inline keyboard with the deep link
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🔗 Watch and Download", url=deep_link))
         # Send link to link channel
         bot.send_message(
             LINK_CHANNEL_ID,
@@ -373,6 +376,7 @@ def handle_channel_post_in_channel(message):
             f"<b>{channel_title}</b>\n"
             f"<a href='{deep_link}'>𝗪𝗔𝗥𝗖𝗛 𝗔𝗡𝗗 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗</a>",
             parse_mode="HTML"
+            reply_markup=markup
         )
 
         # Reply in the channel
@@ -441,6 +445,10 @@ def reqpost_channel_post(message):
             log_msg = f"📌 New Channel Registered\nID: {channel_id}\nTitle: {channel_title}"
             send_log(log_msg)
 
+
+        # Create inline keyboard with the deep link
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🔗 Watch and Download", url=deep_link))
         # Send the generated link to the link channel
         bot.send_message(
             LINK_CHANNEL_ID,
@@ -448,6 +456,7 @@ def reqpost_channel_post(message):
             f"<b>{message.chat.title}</b>\n"
             f"<a href='{deep_link}'>𝗪𝗔𝗥𝗖𝗛 𝗔𝗡𝗗 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗</a>",
             parse_mode="HTML"
+            reply_markup=marku
         )
 
         # Acknowledge in the channel where the command was issued
