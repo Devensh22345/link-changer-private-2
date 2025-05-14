@@ -386,6 +386,9 @@ def handle_channel_post_in_channel(message):
         expire_time = utc_to_ist(link_data["expiration_time"])
         send_log(f"🔗 New Link Created\nChannel: {channel_title}\nExpires: {expire_time}")
 
+        # ✅ Delete the command message
+        bot.delete_message(channel_id, message.message_id)
+
     except Exception as e:
         print(f"[ERROR] {e}")
         bot.reply_to(message, "⚠️ Something went wrong while processing your request.")
