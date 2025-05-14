@@ -262,10 +262,7 @@ def user_handle_deeplink(message):
         )
 
         try:
-            channel_info = user_bot.get_chat(channel_id)
-            channel_name = channel_info.title
-        except Exception as e:
-            channel_name = "the channel"  # fallback if channel fetch fails
+            channel_title = message.chat.title or "Unnamed Channel"
 
         # Create inline keyboard
         markup = types.InlineKeyboardMarkup()
