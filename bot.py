@@ -212,29 +212,29 @@ def user_handle_deeplink(message):
     """Handles deep link activation for user bot."""
     user = message.from_user
     update_user(user)
-    
+
     parts = message.text.split()
     if len(parts) != 2:
         return
-    
+
     deep_link_text = parts[1]
     link_type = "private" if deep_link_text.startswith("private_") else "request"
     deep_link_suffix = deep_link_text[len("private_"):] if link_type == "private" else deep_link_text[len("request_"):]
-    
+
     # Check if link exists and is valid
     if deep_link_suffix not in channel_links:
         sent_msg = user_bot.reply_to(message, "Invalid link.")
         threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
         return
-    
+
     link_data = channel_links[deep_link_suffix]
-    
+
     # Check if link has expired
     if link_data["expiration_time"] < time.time():
         sent_msg = user_bot.reply_to(message, "The link has expired.")
         threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
         return
-    
+
     # Check cooldown
     current_time = time.time()
     if user.id in user_cooldowns and current_time - user_cooldowns[user.id] < 10:
@@ -242,51 +242,48 @@ def user_handle_deeplink(message):
         sent_msg = user_bot.reply_to(message, f"Please wait {remaining} seconds before requesting another link.")
         threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
         return
-    
+
     # Generate appropriate link based on type
     is_request = link_type == "request"
     channel_id = link_data["channel_id"]
     private_link = generate_private_link(channel_id, is_request)
-    
+
     if private_link:
-        # Update user cooldown
         user_cooldowns[user.id] = current_time
-        
-        # Update user stats
+
         users_collection.update_one(
             {"user_id": user.id},
             {"$inc": {"links_requested": 1}}
         )
-        
-        # Update channel clicks
+
         channels_collection.update_one(
             {"channel_id": channel_id},
             {"$inc": {"clicks": 1}}
         )
-        
-        
-channel_info = user_bot.get_chat(chat_id)  # Replace `chat_id` with actual channel ID or username
-channel_name = channel_info.title  # or .username if you prefer
 
-# Create inline keyboard
-       markup = types.InlineKeyboardMarkup()
-       markup.add(
-           types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]),
-           types.InlineKeyboardButton("Watch Now", url=private_link)
-       )
+        try:
+            channel_info = user_bot.get_chat(channel_id)
+            channel_name = channel_info.title
+        except Exception as e:
+            channel_name = "the channel"  # fallback if channel fetch fails
 
-# Send message with buttons and channel name
-       sent_msg = user_bot.reply_to(
-           message,
-           f"<b>⛩️ Join {channel_name} to watch Anime ⛩️</b>\n"
-           f"<b>👉 {private_link}</b>\n"
-           f"<b>👉 {private_link}</b>",
-           parse_mode="HTML",
-           reply_markup=markup
-       )
+        # Create inline keyboard
+        markup = types.InlineKeyboardMarkup()
+        markup.add(
+            types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]),
+            types.InlineKeyboardButton("Watch Now", url=private_link)
+        )
 
-        
-        # Schedule message deletion after 10 minutes
+        # Send reply
+        sent_msg = user_bot.reply_to(
+            message,
+            f"<b>⛩️ Join {channel_name} to watch Anime ⛩️</b>\n"
+            f"<b>👉 {private_link}</b>\n"
+            f"<b>👉 {private_link}</b>",
+            parse_mode="HTML",
+            reply_markup=markup
+        )
+
         threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
     else:
         sent_msg = user_bot.reply_to(message, "Failed to generate a link. Please try again later.")
