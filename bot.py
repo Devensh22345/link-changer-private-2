@@ -262,6 +262,7 @@ def user_handle_deeplink(message):
             channel_info = user_bot.get_chat(channel_id)
             channel_title = channel_info.title or "Unnamed Channel"
         except Exception:
+            print(f"[DEBUG] channel_id: {channel_id}")
             channel_title = "the channel"
 
         markup = types.InlineKeyboardMarkup()
