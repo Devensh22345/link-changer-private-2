@@ -258,19 +258,7 @@ def user_handle_deeplink(message):
             {"$inc": {"links_requested": 1}}
         )
 
-        # Fetch channel title
-        channel_title = get_channel_title(channel_id)
-
-        # Update in-memory and DB with channel title
-        link_data["channel_title"] = channel_title
-        channels_collection.update_one(
-            {"channel_id": channel_id},
-            {
-                "$set": {"title": channel_title},
-                "$inc": {"clicks": 1}
-            },
-            upsert=True
-        )
+        
 
         markup = types.InlineKeyboardMarkup()
         markup.add(
