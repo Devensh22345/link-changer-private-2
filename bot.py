@@ -274,7 +274,7 @@ def user_handle_deeplink(message):
 
         sent_msg = user_bot.reply_to(
             message,
-            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫 {channel_title} ⛩️</b>\n"
+            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 ⛩️</b>\n"
             f"<b>👉 {private_link}</b>\n"
             f"<b>👉 {private_link}</b>",
             parse_mode="HTML",
