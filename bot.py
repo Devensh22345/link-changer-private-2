@@ -375,7 +375,7 @@ def handle_channel_post_in_channel(message):
             f"✅ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫\n"
             f"<b>{channel_title}</b>\n"
             f"<a href='{deep_link}'>𝗪𝗔𝗥𝗖𝗛 𝗔𝗡𝗗 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗</a>",
-            parse_mode="HTML"
+            parse_mode="HTML",
             reply_markup=markup
         )
 
@@ -455,7 +455,7 @@ def reqpost_channel_post(message):
             f"✅ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫\n"
             f"<b>{message.chat.title}</b>\n"
             f"<a href='{deep_link}'>𝗪𝗔𝗥𝗖𝗛 𝗔𝗡𝗗 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗</a>",
-            parse_mode="HTML"
+            parse_mode="HTML",
             reply_markup=marku
         )
 
