@@ -270,14 +270,14 @@ def user_handle_deeplink(message):
         # Create inline keyboard
         markup = types.InlineKeyboardMarkup()
         markup.add(
-            types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]),
-            types.InlineKeyboardButton("Watch Now", url=private_link)
+            types.InlineKeyboardButton("Watch Now", url=private_link),
+            types.InlineKeyboardButton("Get this again", url=link_data["deep_link"])
         )
 
         # Send reply
         sent_msg = user_bot.reply_to(
             message,
-            f"<b>⛩️ Join {channel_name} to watch Anime ⛩️</b>\n"
+            f"<b>⛩️ Here is link For {channel_title} </b>\n"
             f"<b>👉 {private_link}</b>\n"
             f"<b>👉 {private_link}</b>",
             parse_mode="HTML",
@@ -306,8 +306,8 @@ def callback_handler(call):
         channel_count = channels_collection.count_documents({})
 
         about_text = (
-            "📌 About Evolution Links\n"
-            f"‣ Made By: @pixeltiny\n"
+            "📌 About DK Links\n"
+            f"‣ Made By: @MAI_HU_KIRA\n"
             f"‣ Version: 1.0\n"
             f"‣ Stats: {user_count} users | {channel_count} channels\n"
             "Ciao!!"
@@ -373,9 +373,9 @@ def handle_channel_post_in_channel(message):
         # Send link to link channel
         bot.send_message(
             LINK_CHANNEL_ID,
-            f"✅ New Channel Link Generated!\n"
-            f"Channel: <b>{channel_title}</b>\n"
-            f"Access this channel here: <a href='{deep_link}'>Click to join</a>",
+            f"✅ Here is Your Link For\n"
+            f"<b>{channel_title}</b>\n"
+            f"<a href='{deep_link}'>Click to join</a>",
             parse_mode="HTML"
         )
 
