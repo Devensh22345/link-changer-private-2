@@ -8,6 +8,7 @@ from pymongo import MongoClient
 import os
 from telebot import types
 from telebot import apihelper
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Configuration
 BOT_TOKEN = os.environ.get('BOT_TOKEN', "7430337602:AAHes470_Jry8lghlL4_bo49SKZ5W-stBYo")
