@@ -259,8 +259,8 @@ def user_handle_deeplink(message):
 
         try:
             # Get the actual channel name
-            channel_info = user_bot.get_chat(channel_id)
-            channel_title = channel_info.title or "Unnamed Channel"
+            
+            channel_title = message.chat.title or "Unnamed Channel"
         except Exception:
             print(f"[DEBUG] channel_id: {channel_id}")
             channel_title = "the channel"
@@ -273,7 +273,7 @@ def user_handle_deeplink(message):
 
         sent_msg = user_bot.reply_to(
             message,
-            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫 {message.chat.title} ⛩️</b>\n"
+            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫 {channel_title} ⛩️</b>\n"
             f"<b>👉 {private_link}</b>\n"
             f"<b>👉 {private_link}</b>",
             parse_mode="HTML",
