@@ -212,14 +212,7 @@ def user_start_command(message):
 
 
 # Function to handle deep links for user bot
-def get_channel_title(channel_id):
-    """Fetches channel title using user_bot."""
-    try:
-        chat = user_bot.get_chat(channel_id)
-        return chat.title
-    except Exception as e:
-        print(f"[ERROR] Could not fetch title for channel {channel_id}: {e}")
-        return "the channel"
+
 
 def user_handle_deeplink(message):
     """Handles deep link activation for user bot."""
@@ -287,7 +280,7 @@ def user_handle_deeplink(message):
 
         sent_msg = user_bot.reply_to(
             message,
-            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫 {channel_title} ⛩️</b>\n"
+            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 </b>\n"
             f"<b>👉 {private_link}</b>\n"
             f"<b>👉 {private_link}</b>",
             parse_mode="HTML",
@@ -567,7 +560,7 @@ def handle_deeplink_message(message):
         
         bot.reply_to(
             message,
-            f"<b>⛩️ Join {channel_name} to watch Anime ⛩️</b>\n"
+            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤  ⛩️</b>\n"
             f"<b>👉 {private_link}</b>\n"
             f"<b>👉 {private_link}</b>",
             parse_mode="HTML",
