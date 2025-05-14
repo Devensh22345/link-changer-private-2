@@ -208,7 +208,19 @@ def user_start_command(message):
     # Schedule message deletion after 10 minutes
     threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
 
+
+
+
 # Function to handle deep links for user bot
+def get_channel_title(channel_id):
+    """Fetches channel title using user_bot."""
+    try:
+        chat = user_bot.get_chat(channel_id)
+        return chat.title
+    except Exception as e:
+        print(f"[ERROR] Could not fetch title for channel {channel_id}: {e}")
+        return "the channel"
+
 def user_handle_deeplink(message):
     """Handles deep link activation for user bot."""
     user = message.from_user
@@ -253,18 +265,19 @@ def user_handle_deeplink(message):
             {"$inc": {"links_requested": 1}}
         )
 
+        # Fetch channel title
+        channel_title = get_channel_title(channel_id)
+
+        # Update in-memory and DB with channel title
+        link_data["channel_title"] = channel_title
         channels_collection.update_one(
             {"channel_id": channel_id},
-            {"$inc": {"clicks": 1}}
+            {
+                "$set": {"title": channel_title},
+                "$inc": {"clicks": 1}
+            },
+            upsert=True
         )
-
-        try:
-            # Get the actual channel name
-            
-            channel_title = message.chat.title 
-        except Exception:
-            print(f"[DEBUG] channel_id: {channel_id}")
-            channel_title = "the channel"
 
         markup = types.InlineKeyboardMarkup()
         markup.add(
