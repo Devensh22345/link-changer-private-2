@@ -463,6 +463,9 @@ def reqpost_channel_post(message):
         log_msg = f"🔗 New Request Link Created\nChannel: {channel_title}\nExpires: {expire_time}"
         send_log(log_msg)
 
+ # ✅ Delete the command message
+        bot.delete_message(channel_id, message.message_id)
+
     except (ValueError, IndexError):
         bot.reply_to(message, "⚠️ Invalid command. Make sure you are using it correctly.")
     except Exception as e:
