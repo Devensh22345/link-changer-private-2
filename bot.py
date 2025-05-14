@@ -273,7 +273,7 @@ def user_handle_deeplink(message):
 
         sent_msg = user_bot.reply_to(
             message,
-            f"<b>⛩️ Here is link for {channel_title} ⛩️</b>\n"
+            f"<b>⛩️ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫 {channel_title} ⛩️</b>\n"
             f"<b>👉 {private_link}</b>\n"
             f"<b>👉 {private_link}</b>",
             parse_mode="HTML",
@@ -369,16 +369,16 @@ def handle_channel_post_in_channel(message):
         # Send link to link channel
         bot.send_message(
             LINK_CHANNEL_ID,
-            f"✅ Here is Your Link For\n"
+            f"✅ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫\n"
             f"<b>{channel_title}</b>\n"
-            f"<a href='{deep_link}'>Click to join</a>",
+            f"<a href='{deep_link}'>𝗪𝗔𝗥𝗖𝗛 𝗔𝗡𝗗 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗</a>",
             parse_mode="HTML"
         )
 
         # Reply in the channel
         bot.reply_to(
             message,
-            f"✅ Link sent to the link channel!\n<a href='{deep_link}'>Click here</a> to view.",
+            f"✅ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐭𝐡𝐢𝐬 𝐜𝐡𝐚𝐧𝐧𝐞𝐥 𝐩𝐫𝐢𝐯𝐚𝐭𝐞 𝐥𝐢𝐧𝐤 \n<b>👉 {deep_link}</b>",
             parse_mode="HTML"
         )
 
@@ -441,16 +441,16 @@ def reqpost_channel_post(message):
         # Send the generated link to the link channel
         bot.send_message(
             LINK_CHANNEL_ID,
-            f"✅ New Channel Request Link Generated!\n"
-            f"Channel: <b>{message.chat.title}</b>\n"
-            f"Access this channel here: <a href='{deep_link}'>Click to join</a>",
+            f"✅ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐥𝐢𝐧𝐤 𝐟𝐨𝐫\n"
+            f"<b>{channel_title}</b>\n"
+            f"<a href='{deep_link}'>𝗪𝗔𝗥𝗖𝗛 𝗔𝗡𝗗 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗</a>",
             parse_mode="HTML"
         )
 
         # Acknowledge in the channel where the command was issued
         bot.reply_to(
             message,
-            f"✅ Request link successfully generated!\n<a href='{deep_link}'>Click here</a> to view.",
+            f"✅ 𝐇𝐞𝐫𝐞 𝐢𝐬 𝐭𝐡𝐢𝐬 𝐜𝐡𝐚𝐧𝐧𝐞𝐥 𝐑𝐞𝐪𝐮𝐞𝐬𝐭 𝐥𝐢𝐧𝐤 \n<b>👉 {deep_link}</b>",
             parse_mode="HTML"
         )
 
