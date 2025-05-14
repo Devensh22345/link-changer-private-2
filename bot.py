@@ -11,11 +11,11 @@ from telebot import apihelper
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Configuration
-BOT_TOKEN = os.environ.get('BOT_TOKEN', "7622306600:AAGEMajj4iR5-CeYIrNi0fvhUa9oiJiJx54")
-USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7952718714:AAHLRxtXn6jEofgFEPNfjBhS2BVrl-bgKjI")  # User bot token
-ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '7337525692,7074889200,6264642175').split(',') if id]
+BOT_TOKEN = os.environ.get('BOT_TOKEN', "8150393989:AAHkqny2jOM3NxbVSNMOT6IGYJ6FNyQb5cY")
+USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7430337602:AAGr3LVnqUJ-NfFmDenDc8RGmKP1pzOTciE")  # User bot token
+ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6872968794').split(',') if id]
 LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002534091815")
-MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://gunji:gunji@cluster0.j2lcjxl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://link:link@cluster0.hciahet.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 
 # Connect to MongoDB
