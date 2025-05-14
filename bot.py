@@ -186,20 +186,21 @@ def user_start_command(message):
             user_handle_deeplink(message)
             return
 
-    # Regular start command (no special suffix)
+     # Regular start command (no special suffix)
     markup = types.InlineKeyboardMarkup(row_width=2)
-    anime_button = types.InlineKeyboardButton("🔥 𝐀𝐧𝐢𝐦𝐞 𝐢𝐧 𝐇𝐢𝐧𝐝𝐢", url="https://t.me/Anime_Hindi_Ace")
-    chat_button = types.InlineKeyboardButton("💬 𝐂𝐡𝐚𝐭 𝐆𝐫𝐨𝐮𝐩", url="https://t.me/Ace_anime_group")
+    anime_button = types.InlineKeyboardButton("🔥 𝐀𝐧𝐢𝐦𝐞 𝐢𝐧 𝐇𝐢𝐧𝐝𝐢", url="https://t.me/+2fsV4nzHvOs2OGNl")
+    chat_button = types.InlineKeyboardButton("💬 𝐂𝐡𝐚𝐭 𝐆𝐫𝐨𝐮𝐩", url="https://t.me/dkanime_group")
     markup.add(anime_button, chat_button)
 
     message_text = (
     "⛩️⛩️ **𝗡𝗲𝘄 𝗔𝗻𝗶𝗺𝗲 𝗶𝗻 𝗛𝗶𝗻𝗱𝗶** ⛩️⛩️\n"
-    "[👉 https://t.me/Anime_Hindi_Ace](👉https://t.me/Anime_Hindi_Ace)\n\n"
+    "[👉 https://t.me/+2fsV4nzHvOs2OGNl](👉https://t.me/+2fsV4nzHvOs2OGNl)\n\n"
     "💬 **𝗔𝗻𝗶𝗺𝗲 𝗦𝗲𝗮𝗿𝗰𝗵 𝗮𝗻𝗱 𝗖𝗵𝗮𝘁 𝗚𝗿𝗼𝘂𝗽** 💬\n"
-    "[👉 https://t.me/Ace_Anime_Group](https://t.me/Ace_Anime_Group)\n\n"
+    "[👉 https://t.me/dkanime_group](https://t.me/dkanime_group)\n\n"
     "🍑 **𝗔𝗱𝘂𝗹𝘁 𝗔𝗻𝗶𝗺𝗲 𝗶𝗻 𝗵𝗶𝗻𝗱𝗶 [𝟭𝟴+]** 🍑\n"
-    "[👉 https://t.me/+pzFZ6pEJ7Nc2MjY1](https://t.me/+pzFZ6pEJ7Nc2MjY1)"
+    "[👉 https://t.me/+X-vfMcD-GkY3MzQ1](https://t.me/+X-vfMcD-GkY3MzQ1)"
     )
+
 
     sent_msg = user_bot.reply_to(message, message_text, parse_mode="Markdown", reply_markup=markup)
     
@@ -263,18 +264,26 @@ def user_handle_deeplink(message):
             {"$inc": {"clicks": 1}}
         )
         
-        # Create button with the permanent deep link
-        markup = types.InlineKeyboardMarkup()
-        markup.add(types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]))
-        
-        sent_msg = user_bot.reply_to(
-            message,
-            f"<b>⛩️ Join Channel to watch Anime⛩️</b>\n"
-            f"<b>👉{private_link}</b>\n"
-            f"<b>👉{private_link}</b>",
-            parse_mode="HTML",
-            reply_markup=markup
-        )
+      channel_info = user_bot.get_chat(chat_id)  # Replace `chat_id` with actual channel ID or username
+      channel_name = channel_info.title  # or .username if you prefer
+
+# Create inline keyboard
+      markup = types.InlineKeyboardMarkup()
+      markup.add(
+          types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]),
+          types.InlineKeyboardButton("Watch Now", url=private_link)
+      )
+
+# Send message with buttons and channel name
+      sent_msg = user_bot.reply_to(
+          message,
+          f"<b>⛩️ Join {channel_name} to watch Anime ⛩️</b>\n"
+          f"<b>👉 {private_link}</b>\n"
+          f"<b>👉 {private_link}</b>",
+          parse_mode="HTML",
+          reply_markup=markup
+      )
+
         
         # Schedule message deletion after 10 minutes
         threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
