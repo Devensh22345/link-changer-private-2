@@ -269,21 +269,21 @@ channel_info = user_bot.get_chat(chat_id)  # Replace `chat_id` with actual chann
 channel_name = channel_info.title  # or .username if you prefer
 
 # Create inline keyboard
-      markup = types.InlineKeyboardMarkup()
-      markup.add(
-          types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]),
-          types.InlineKeyboardButton("Watch Now", url=private_link)
-      )
+       markup = types.InlineKeyboardMarkup()
+       markup.add(
+           types.InlineKeyboardButton("Get this again", url=link_data["deep_link"]),
+           types.InlineKeyboardButton("Watch Now", url=private_link)
+       )
 
 # Send message with buttons and channel name
-      sent_msg = user_bot.reply_to(
-          message,
-          f"<b>⛩️ Join {channel_name} to watch Anime ⛩️</b>\n"
-          f"<b>👉 {private_link}</b>\n"
-          f"<b>👉 {private_link}</b>",
-          parse_mode="HTML",
-          reply_markup=markup
-      )
+       sent_msg = user_bot.reply_to(
+           message,
+           f"<b>⛩️ Join {channel_name} to watch Anime ⛩️</b>\n"
+           f"<b>👉 {private_link}</b>\n"
+           f"<b>👉 {private_link}</b>",
+           parse_mode="HTML",
+           reply_markup=markup
+       )
 
         
         # Schedule message deletion after 10 minutes
