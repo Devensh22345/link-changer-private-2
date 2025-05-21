@@ -11,7 +11,7 @@ from telebot import apihelper
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Configuration
-BOT_TOKEN = os.environ.get('BOT_TOKEN', "7523630639:AAEKX-h5rGwGzCIn-8fcsCJW-CKcWuu640U")
+BOT_TOKEN = os.environ.get('BOT_TOKEN', "8150393989:AAHkqny2jOM3NxbVSNMOT6IGYJ6FNyQb5cY")
 USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7430337602:AAGr3LVnqUJ-NfFmDenDc8RGmKP1pzOTciE")  # User bot token
 ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6872968794').split(',') if id]
 LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002640304615")
