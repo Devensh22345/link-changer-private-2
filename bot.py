@@ -105,7 +105,7 @@ def generate_private_link(channel_id, is_request=False):
             # Request link with 10-minute expiry, no member limit
             link = bot.create_chat_invite_link(
                 chat_id=channel_id, 
-                expire_date=int(time.time()) + 600,  # 10-minute expiry
+                expire_date=int(time.time()) + 120,  # 10-minute expiry
                 member_limit=None,
                 creates_join_request=True 
             )
@@ -113,7 +113,7 @@ def generate_private_link(channel_id, is_request=False):
             # Private link with 10-minute expiry, 1 member limit
             link = bot.create_chat_invite_link(
                 chat_id=channel_id, 
-                expire_date=int(time.time()) + 600,  # 10-minute expiry
+                expire_date=int(time.time()) + 120,  # 10-minute expiry
                 member_limit=1
             )
         
@@ -122,7 +122,7 @@ def generate_private_link(channel_id, is_request=False):
             "channel_id": channel_id,
             "link": link.invite_link,
             "created_at": time.time(),
-            "expires_at": int(time.time()) + 600,
+            "expires_at": int(time.time()) + 120,
             "type": "request" if is_request else "private"
         })
         
@@ -206,7 +206,7 @@ def user_start_command(message):
     sent_msg = user_bot.reply_to(message, message_text, parse_mode="Markdown", reply_markup=markup)
     
     # Schedule message deletion after 10 minutes
-    threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
+    threading.Timer(120, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
 
 # Function to handle deep links for user bot
 def user_handle_deeplink(message):
@@ -224,21 +224,21 @@ def user_handle_deeplink(message):
 
     if deep_link_suffix not in channel_links:
         sent_msg = user_bot.reply_to(message, "Invalid link.")
-        threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
+        threading.Timer(120, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
         return
 
     link_data = channel_links[deep_link_suffix]
 
     if link_data["expiration_time"] < time.time():
         sent_msg = user_bot.reply_to(message, "The link has expired.")
-        threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
+        threading.Timer(120, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
         return
 
     current_time = time.time()
     if user.id in user_cooldowns and current_time - user_cooldowns[user.id] < 10:
         remaining = int(10 - (current_time - user_cooldowns[user.id]))
         sent_msg = user_bot.reply_to(message, f"Please wait {remaining} seconds before requesting another link.")
-        threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
+        threading.Timer(120, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
         return
 
     is_request = link_type == "request"
@@ -281,10 +281,10 @@ def user_handle_deeplink(message):
             reply_markup=markup
         )
 
-        threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
+        threading.Timer(120, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
     else:
         sent_msg = user_bot.reply_to(message, "Failed to generate a link. Please try again later.")
-        threading.Timer(600, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
+        threading.Timer(120, delete_message, args=[user_bot, message.chat.id, sent_msg.message_id]).start()
 
 # Function to delete messages
 def delete_message(bot_instance, chat_id, message_id):
