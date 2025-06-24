@@ -11,11 +11,11 @@ from telebot import apihelper
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Configuration
-BOT_TOKEN = os.environ.get('BOT_TOKEN', "8072699440:AAEN_u-O8I9ZWf6r02waVRG8qPH1Joka30g")
-USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7833128310:AAGHDWq_ExDuX6aTkfmuGhIo8Onlwhsdx84")  # User bot token
-ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6872968794').split(',') if id]
-LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002628986986")
-MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://link:link@cluster0.swqv8gk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+BOT_TOKEN = os.environ.get('BOT_TOKEN', "7690461792:AAFJqJMQEULhs9-xnEbaltbZo3brxO_ALcU")
+USER_BOT_TOKEN = os.environ.get('USER_BOT_TOKEN', "7690461792:AAFJqJMQEULhs9-xnEbaltbZo3brxO_ALcU")  # User bot token
+ADMIN_IDS = [int(id) for id in os.environ.get('ADMIN_IDS', '6872968794,5481593158').split(',') if id]
+LOG_CHANNEL = os.environ.get('LOG_CHANNEL', "-1002669926540")
+MONGO_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://devenshk03:devenshk03@cluster0.quxtzf8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 
 # Connect to MongoDB
@@ -319,7 +319,7 @@ def callback_handler(call):
 from telebot import types
 
 # Replace with your actual link channel ID
-LINK_CHANNEL_ID = "-1002301713536"  # or the channel's ID, e.g. -1001234567890
+LINK_CHANNEL_ID = "-1002669926540"  # or the channel's ID, e.g. -1001234567890
 
 @bot.channel_post_handler(commands=["channelpost"])
 def handle_channel_post_in_channel(message):
